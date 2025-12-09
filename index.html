@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shiva Dhyan - The Cosmic Shrine</title>
+    <style>
+        :root {
+            --bg-deep: #050505;
+            --bg-night: #0b1026;
+            --gold: #ffd700;
+            --ash: #e0e0e0;
+            --fire-core: #ffcc00;
+            --fire-outer: #ff4500;
+            --water-blue: #a3d5ff;
+            --text-main: #f0f0f0;
+        }
+
+        * { box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            background: radial-gradient(circle at bottom, var(--bg-night), var(--bg-deep));
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- COSMIC BACKGROUND --- */
+        #stars {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        }
+        .star {
+            position: absolute; background: white; border-radius: 50%; opacity: 0.8;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        /* --- UTILS --- */
+        .hidden { display: none !important; }
+        .flex-center { display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .btn {
+            background: transparent; border: 1px solid var(--gold); color: var(--gold);
+            padding: 10px 20px; border-radius: 25px; cursor: pointer; margin: 5px;
+            font-family: inherit; font-weight: bold; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem;
+        }
+        .btn:hover, .btn.active { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold); }
+
+        /* --- ENTRANCE --- */
+        #entrance {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 999;
+            transition: opacity 1.5s ease;
+        }
+        .bell-svg {
+            width: 100px; height: 100px; fill: var(--gold);
+            cursor: pointer; transform-origin: top center;
+            filter: drop-shadow(0 0 10px var(--gold));
+        }
+        .swinging { animation: bell-swing 2s ease-in-out infinite; }
+        @keyframes bell-swing { 0% { transform: rotate(10deg); } 50% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
+
+        /* --- SHRINE AREA --- */
+        .shrine-container {
+            position: relative; height: 60vh; width: 100%;
+            display: flex; justify-content: center; align-items: flex-end;
+            padding-bottom: 50px;
+        }
+
+        /* Pure CSS Shivling */
+        .shivling-wrapper { position: relative; width: 200px; height: 260px; }
+        
+        .lingam {
+            width: 90px; height: 150px; background: linear-gradient(70deg, #333, #000);
+            border-radius: 50px 50px 20px 20px; margin: 0 auto; position: relative; z-index: 10;
+            box-shadow: inset -10px -10px 20px rgba(255,255,255,0.1);
+        }
+        /* Tripundra (Lines) */
+        .tripundra { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); width: 50px; }
+        .t-line { height: 3px; background: var(--ash); margin-bottom: 6px; border-radius: 2px; box-shadow: 0 0 5px white; }
+        .bindi { width: 8px; height: 8px; background: red; border-radius: 50%; margin: -10px auto 0; display: block; box-shadow: 0 0 5px red; }
+
+        .yoni {
+            width: 180px; height: 50px; background: #222; border-radius: 100px;
+            position: absolute; bottom: 30px; left: 10px; z-index: 5;
+            border: 2px solid #444;
+        }
+        
+        /* Lota (Water Pot) */
+        .lota {
+            width: 40px; height: 35px; background: linear-gradient(to right, #DAA520, #FFD700);
+            border-radius: 0 0 15px 15px; position: absolute; top: -50px; left: 50%; transform: translateX(-50%);
+            z-index: 20; cursor: pointer; transition: transform 0.5s;
+            box-shadow: 0 0 10px var(--gold);
+        }
+        .lota:hover { transform: translateX(-50%) rotate(-5deg); }
+        .water-stream {
+            width: 4px; height: 0; background: rgba(163, 213, 255, 0.6);
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            z-index: 9; transition: height 1s;
+        }
+        .water-stream.flowing { height: 140px; }
+
+        /* Diya (Lamp) */
+        .diya {
+            width: 40px; height: 20px; background: #8B4513; border-radius: 0 0 20px 20px;
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            cursor: pointer; z-index: 20;
+        }
+        .flame {
+            width: 12px; height: 20px; background: radial-gradient(ellipse at bottom, var(--fire-core), var(--fire-outer));
+            border-radius: 50% 50% 20px 20px; position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+            opacity: 0; transition: opacity 0.5s; filter: blur(1px);
+        }
+        .flame.lit { opacity: 1; animation: flame-flicker 0.1s infinite alternate; }
+        @keyframes flame-flicker { 0% { transform: translateX(-50%) scale(1); } 100% { transform: translateX(-50%) scale(1.1); } }
+
+        /* --- CONTROLS PANEL --- */
+        .controls {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(5px);
+            margin: 0 auto; width: 90%; max-width: 600px; padding: 20px;
+            border-radius: 15px; text-align: center; border: 1px solid #333;
+        }
+        
+        .timer { font-size: 3rem; font-weight: 100; margin: 20px 0; font-variant-numeric: tabular-nums; }
+        
+        .module-box { margin-top: 15px; padding: 15px; border-top: 1px solid #333; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Spotify Iframe */
+        iframe { border-radius: 12px; width: 100%; height: 152px; border: none; }
+
+        /* --- KNOWLEDGE MOUNTAIN --- */
+        .mountain-section {
+            position: relative; margin-top: 50px; min-height: 80vh;
+            background: linear-gradient(to top, #000, #1a1a1a);
+            overflow: hidden; text-align: center; padding-top: 40px;
+        }
+        .mountain-shape {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 50vw solid transparent; border-right: 50vw solid transparent;
+            border-bottom: 60vh solid #222;
+        }
+        .snow-cap {
+            position: absolute; top: 0; left: -15vw;
+            width: 0; height: 0;
+            border-left: 15vw solid transparent; border-right: 15vw solid transparent;
+            border-bottom: 15vh solid rgba(255,255,255,0.8);
+        }
+        
+        .torn-paper {
+            position: absolute; background: #d4c59a; color: #222;
+            padding: 10px; font-family: 'Courier New', Courier, monospace; font-weight: bold;
+            clip-path: polygon(2% 0%, 95% 5%, 100% 100%, 0% 95%);
+            cursor: pointer; width: 40px; height: 40px;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.5); transition: 0.4s;
+        }
+        .torn-paper.active {
+            width: 280px; height: auto; z-index: 100; text-align: left;
+            clip-path: none; border-radius: 2px;
+        }
+        
+        /* --- QUOTES --- */
+        .quote-section { padding: 50px 20px; text-align: center; background: #050505; border-top: 1px solid #333; }
+        .quote-text { font-style: italic; font-size: 1.2rem; color: var(--gold); margin-bottom: 20px; min-height: 60px;}
+
+        /* --- FOOTER STATS --- */
+        .stats-footer {
+            position: fixed; bottom: 0; width: 100%; background: #111;
+            padding: 10px; font-size: 0.8rem; text-align: center; color: #888;
+            border-top: 1px solid #222; z-index: 999;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="entrance" class="flex-center">
+        <svg class="bell-svg" id="bell-icon" viewBox="0 0 24 24" onclick="ringBell()">
+            <path d="M12 2C9.243 2 7 4.243 7 7v7H6c-1.103 0-2 .897-2 2v2c0 1.103.897 2 2 2h5.056c.264 1.706 1.724 3 3.444 3s3.18-1.294 3.444-3H18c1.103 0 2-.897 2-2v-2c0-1.103-.897-2-2-2h-1V7c0-2.757-2.243-5-5-5zm-2 7c0-1.103.897-2 2-2s2 .897 2 2v7h-4V9z"/>
+        </svg>
+        <p style="margin-top: 20px; color: #666;">Tap the Bell to Enter</p>
+    </div>
+
+    <div id="app" class="hidden">
+        
+        <div id="stars"></div>
+
+        <div class="shrine-container">
+            <div class="shivling-wrapper">
+                
+                <div id="lota-wrapper" class="hidden">
+                    <div class="lota" onclick="toggleWater()"></div>
+                    <div class="water-stream" id="stream"></div>
+                </div>
+
+                <div class="lingam">
+                    <div class="tripundra">
+                        <div class="t-line"></div>
+                        <div class="t-line"></div>
+                        <div class="t-line"></div>
+                        <div class="bindi"></div>
+                    </div>
+                </div>
+                <div class="yoni"></div>
+                
+                <div id="diya-wrapper" class="hidden">
+                    <div class="diya" onclick="toggleFire()">
+                        <div class="flame" id="flame"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div style="margin-bottom: 20px;">
+                <button class="btn" onclick="switchMode('sound')">Sound Energy</button>
+                <button class="btn" onclick="switchMode('water')">Water (Abhishekam)</button>
+                <button class="btn" onclick="switchMode('light')">Light (Deepam)</button>
+                <button class="btn" onclick="switchMode('om')">Om Jap</button>
+                <button class="btn" onclick="switchMode('bowl')">Tibetan Bowl</button>
+            </div>
+
+            <div class="timer" id="timer-display">00:00</div>
+            <button class="btn" id="timer-btn" onclick="toggleTimer()">Start Meditation</button>
+
+            <div id="spotify-module" class="module-box hidden">
+                <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1DXamBAn43Yps9?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+
+            <div id="voice-module" class="module-box hidden">
+                <p>Chant "Om" and record your resonance.</p>
+                <button class="btn" id="rec-btn" onclick="handleRecord()">Record Voice</button>
+                <audio id="audio-playback" controls style="width:100%; margin-top:10px; display:none"></audio>
+            </div>
+
+        </div>
+
+        <div class="mountain-section">
+            <h2 style="position: relative; z-index: 10; text-shadow: 0 0 10px black;">The Path of Shiva</h2>
+            <div class="mountain-shape">
+                <div class="snow-cap"></div>
+            </div>
+
+            <div class="torn-paper" style="bottom: 20%; left: 30%;" onclick="expandPaper(this)">
+                1
+                <span class="hidden"><br><br><strong>ADIYOGI</strong><br>Shiva is not a god, but the first Yogi. He transmitted the science of Yoga to the Saptarishis.</span>
+            </div>
+            <div class="torn-paper" style="bottom: 40%; right: 30%;" onclick="expandPaper(this)">
+                2
+                <span class="hidden"><br><br><strong>VAIRAGYA</strong><br>He is the ultimate ascetic. Covered in ash, he signifies that everything eventually turns to ash.</span>
+            </div>
+            <div class="torn-paper" style="bottom: 60%; left: 45%;" onclick="expandPaper(this)">
+                3
+                <span class="hidden"><br><br><strong>TRINETRA</strong><br>The third eye opens when the two physical eyes (duality) cease to dominate. It is the eye of wisdom and fire.</span>
+            </div>
+        </div>
+
+        <div class="quote-section">
+            <div class="quote-text" id="quote-box">"When you say 'Shiva', you are calling upon the nothingness."</div>
+            <button class="btn" onclick="newQuote()">Receive Wisdom</button>
+        </div>
+
+        <div style="height: 60px;"></div>
+    </div>
+
+    <div class="stats-footer">
+        Daily Sadhana: <span id="stats-time" style="color: var(--gold)">0</span> mins
+    </div>
+
+    <audio id="sfx-bell" src="https://assets.mixkit.co/active_storage/sfx/1487/1487-preview.m4a"></audio>
+    <audio id="sfx-water" src="https://assets.mixkit.co/active_storage/sfx/1167/1167-preview.m4a" loop></audio>
+
+    <script>
+        // --- 1. COSMIC BACKGROUND GENERATOR ---
+        function createStars() {
+            const container = document.getElementById('stars');
+            for(let i=0; i<50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3;
+                const duration = Math.random() * 3 + 2;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.setProperty('--duration', duration + 's');
+                container.appendChild(star);
+            }
+        }
+        createStars();
+
+        // --- 2. ENTRANCE LOGIC ---
+        function ringBell() {
+            const bell = document.getElementById('bell-icon');
+            const audio = document.getElementById('sfx-bell');
+            bell.classList.add('swinging');
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Audio requires interaction"));
+
+            setTimeout(() => {
+                document.getElementById('entrance').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('entrance').classList.add('hidden');
+                    document.getElementById('app').classList.remove('hidden');
+                    loadStats();
+                }, 1000);
+            }, 1200);
+        }
+
+        // --- 3. MODE SWITCHING ---
+        function switchMode(mode) {
+            document.getElementById('lota-wrapper').classList.add('hidden');
+            document.getElementById('diya-wrapper').classList.add('hidden');
+            document.getElementById('spotify-module').classList.add('hidden');
+            document.getElementById('voice-module').classList.add('hidden');
+            
+            stopWater();
+
+            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if(mode === 'water') {
+                document.getElementById('lota-wrapper').classList.remove('hidden');
+            } else if (mode === 'light') {
+                document.getElementById('diya-wrapper').classList.remove('hidden');
+            } else if (mode === 'sound' || mode === 'bowl') {
+                document.getElementById('spotify-module').classList.remove('hidden');
+            } else if (mode === 'om') {
+                document.getElementById('voice-module').classList.remove('hidden');
+            }
+        }
+
+        // --- 4. INTERACTIVE ELEMENTS ---
+        function toggleWater() {
+            const stream = document.getElementById('stream');
+            const audio = document.getElementById('sfx-water');
+            if(stream.classList.contains('flowing')) {
+                stream.classList.remove('flowing');
+                audio.pause();
+            } else {
+                stream.classList.add('flowing');
+                audio.volume = 0.5;
+                audio.play();
+            }
+        }
+        function stopWater() {
+            document.getElementById('stream').classList.remove('flowing');
+            document.getElementById('sfx-water').pause();
+        }
+
+        function toggleFire() {
+            document.getElementById('flame').classList.toggle('lit');
+        }
+
+        function expandPaper(el) {
+            const span = el.querySelector('span');
+            if(el.classList.contains('active')) {
+                el.classList.remove('active');
+                span.classList.add('hidden');
+                const index = Array.from(el.parentNode.children).indexOf(el) - 1;
+                el.innerHTML = index + 1 + span.outerHTML; 
+            } else {
+                el.classList.add('active');
+                span.classList.remove('hidden');
+            }
+        }
+
+        // --- 5. TIMER & STATS ---
+        let timerInterval;
+        let seconds = 0;
+
+        function toggleTimer() {
+            const btn = document.getElementById('timer-btn');
+            if(btn.innerText === "START MEDITATION") {
+                btn.innerText = "STOP & SAVE";
+                btn.style.background = "var(--gold)";
+                btn.style.color = "#000";
+                
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+                    const s = (seconds % 60).toString().padStart(2, '0');
+                    document.getElementById('timer-display').innerText = `${m}:${s}`;
+                }, 1000);
+            } else {
+                clearInterval(timerInterval);
+                btn.innerText = "START MEDITATION";
+                btn.style.background = "transparent";
+                btn.style.color = "var(--gold)";
+                
+                let saved = parseFloat(localStorage.getItem('shivaTime') || 0);
+                let currentMins = seconds / 60;
+                let total = saved + currentMins;
+                localStorage.setItem('shivaTime', total.toFixed(1));
+                loadStats();
+                seconds = 0;
+            }
+        }
+
+        function loadStats() {
+            document.getElementById('stats-time').innerText = localStorage.getItem('shivaTime') || 0;
+        }
+
+        // --- 6. VOICE RECORDER ---
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        async function handleRecord() {
+            const btn = document.getElementById('rec-btn');
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.start();
+                    audioChunks = [];
+                    
+                    mediaRecorder.addEventListener("dataavailable", event => {
+                        audioChunks.push(event.data);
+                    });
+                    
+                    mediaRecorder.addEventListener("stop", () => {
+                        const audioBlob = new Blob(audioChunks);
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audio = document.getElementById('audio-playback');
+                        audio.src = audioUrl;
+                        audio.style.display = 'block';
+                    });
+
+                    isRecording = true;
+                    btn.innerText = "STOP RECORDING";
+                    btn.style.borderColor = "red";
+                    btn.style.color = "red";
+                } catch(e) { alert("Microphone access required."); }
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                btn.innerText = "RECORD VOICE";
+                btn.style.borderColor = "var(--gold)";
+                btn.style.color = "var(--gold)";
+            }
+        }
+
+        // --- 7. QUOTES ---
+        const quotes = [
+            "Shiva is the silence before the sound.",
+            "Fire burns everything, but Shiva burns the ego.",
+            "The third eye sees what is invisible to the two.",
+            "To understand Shiva, you must become nothing.",
+            "He is the destroyer of illusions.",
+            "Your breath is the movement of Shiva.",
+            "Stillness is the language of the Divine.",
+            "Everything comes from nothing and goes back to nothing.",
+            "Om Namah Shivaya.",
+            "Be like the mountain, still and unshakeable."
+        ];
+
+        function newQuote() {
+            const r = Math.floor(Math.random() * quotes.length);
+            document.getElementById('quote-box').innerText = `"${quotes[r]}"`;
+        }
+    </script>
+</body>
+</html>
