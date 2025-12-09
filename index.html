@@ -2,455 +2,472 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adiyogi: The Cosmic Ascent</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kailash: The Ultimate Guide</title>
     <style>
-        /* --- 1. THEME & FONTS --- */
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap');
+        /* --- 1. CORE AESTHETICS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
 
         :root {
-            --bg-dark: #050505;
-            --stone: #1a1a1a;
-            --copper: #c27e48;
-            --copper-glow: #ffae6b;
-            --water: rgba(189, 218, 255, 0.5);
-            --fire-inner: #fff5d6;
-            --fire-outer: #ff4500;
+            --bg-cosmic: #050505;
+            --gold: #d4af37;
+            --gold-glow: #ffeaa7;
+            --rudra: #5c2808;
+            --ash: #b0c4de;
+            --glass: rgba(20, 20, 20, 0.85);
+            --border: 1px solid rgba(255, 255, 255, 0.1);
             --font-head: 'Cinzel', serif;
-            --font-body: 'Lato', sans-serif;
+            --font-body: 'Rajdhani', sans-serif;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+        
         body {
-            margin: 0; background: var(--bg-dark); color: #ddd;
-            font-family: var(--font-body); overflow-x: hidden;
+            margin: 0; background-color: var(--bg-cosmic); color: #e0e0e0;
+            font-family: var(--font-body); overflow: hidden; height: 100vh;
         }
 
-        /* --- 2. ENTRANCE OVERLAY --- */
-        #entrance-screen {
+        /* --- 2. OPENING (Indian Temple Gate) --- */
+        #gate-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle, #1a1a1a, #000);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 1.5s ease;
         }
-        .entrance-title {
-            font-family: var(--font-head); font-size: 1.5rem; letter-spacing: 4px;
-            color: var(--copper); margin-top: 30px; text-transform: uppercase;
-            text-align: center;
+        .gate-mandala {
+            width: 150px; height: 150px; border: 2px solid var(--gold); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            cursor: pointer; position: relative;
         }
-        .bell-rope { width: 2px; height: 100px; background: #333; margin-bottom: -5px; }
-        .bell-svg {
-            width: 100px; fill: var(--copper); filter: drop-shadow(0 0 20px var(--copper));
-            cursor: pointer; transform-origin: top center;
+        .gate-mandala::after {
+            content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%;
+            border: 1px dashed var(--gold); animation: spin 10s linear infinite;
         }
-        .swinging { animation: swing 2s ease-in-out infinite; }
-        @keyframes swing { 0% { transform: rotate(10deg); } 50% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
+        .bell-icon { font-size: 3rem; color: var(--gold); animation: swing 2s infinite ease-in-out; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes swing { 0%, 100% { transform: rotate(10deg); } 50% { transform: rotate(-10deg); } }
 
-        /* --- 3. MAIN UI LAYOUT --- */
-        #main-app { opacity: 0; transition: opacity 1.5s; }
-
-        .shrine-section {
-            min-height: 90vh;
-            background: radial-gradient(circle at center 60%, #1a1a1a 0%, #000 70%);
-            display: flex; flex-direction: column; align-items: center;
-            padding-bottom: 20px;
+        /* --- 3. MAIN APP LAYOUT --- */
+        #app-container {
+            height: 100%; display: flex; flex-direction: column; opacity: 0; transition: opacity 1s;
         }
 
-        /* --- 4. SHIVLING ASSEMBLY (Hero) --- */
-        .shiva-assembly {
-            position: relative; width: 300px; height: 500px;
-            display: flex; flex-direction: column; align-items: center;
-            margin-top: 20px;
+        /* Viewport Area */
+        .viewport {
+            flex-grow: 1; position: relative; overflow-y: auto; overflow-x: hidden;
+            scroll-behavior: smooth;
         }
-
-        /* Hanging Pot (SVG) */
-        .pot-container { position: relative; width: 100px; height: 100px; z-index: 20; }
-        .rope-line { position: absolute; top: -50px; left: 50%; width: 2px; height: 50px; background: #444; }
-        .pot-svg { width: 100%; fill: url(#copperGrad); cursor: pointer; transition: transform 0.5s; }
-        .pot-svg:hover { transform: rotate(-5deg); }
         
-        .water-stream {
-            position: absolute; top: 90px; left: 50%; width: 4px; height: 0;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.8), var(--water));
-            transform: translateX(-50%); transition: height 0.8s ease-in;
-            z-index: 15; filter: blur(1px); opacity: 0.8;
-        }
-        .water-stream.flowing { height: 260px; }
+        .tab-content { display: none; min-height: 100%; animation: fadeUp 0.4s ease; padding-bottom: 80px; }
+        .tab-content.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* The Lingam (CSS 3D) */
+        /* Bottom Navigation Dock */
+        .nav-dock {
+            height: 70px; background: rgba(10,10,10,0.95); border-top: var(--border);
+            display: flex; justify-content: space-around; align-items: center;
+            backdrop-filter: blur(10px); z-index: 1000;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; color: #666;
+            font-size: 0.7rem; text-transform: uppercase; cursor: pointer; transition: 0.3s;
+        }
+        .nav-item svg { width: 24px; height: 24px; fill: #666; margin-bottom: 4px; transition: 0.3s; }
+        .nav-item.active { color: var(--gold); }
+        .nav-item.active svg { fill: var(--gold); transform: translateY(-5px); filter: drop-shadow(0 0 5px var(--gold)); }
+
+        /* --- TAB 1: SANCTUM (Meditation) --- */
+        .sanctum-bg {
+            background: radial-gradient(circle at center 40%, #222, #000);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;
+        }
+        
+        /* 3D Shivling Assembly */
+        .altar-assembly { position: relative; width: 300px; height: 450px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Pot */
+        .kalash-group { position: absolute; top: 0; z-index: 20; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .rope { width: 1px; height: 50px; background: #666; }
+        .pot-body { width: 70px; height: 60px; background: linear-gradient(135deg, #b87333, #e6a36c); border-radius: 5px 5px 35px 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .water-stream { width: 3px; height: 0; background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(135,206,235,0.4)); transition: height 0.5s; opacity: 0.8; z-index: 15; }
+        .water-stream.flowing { height: 180px; }
+
+        /* Lingam */
         .lingam {
-            width: 120px; height: 180px; margin-top: 60px;
-            background: radial-gradient(circle at 30% 30%, #444, #000 85%);
-            border-radius: 60px 60px 30px 30px;
-            position: relative; z-index: 10;
-            box-shadow: inset 5px 5px 20px rgba(255,255,255,0.1), 0 0 50px rgba(0,0,0,0.9);
+            width: 110px; height: 170px; margin-top: 80px;
+            background: radial-gradient(circle at 30% 30%, #3a3a3a, #000 90%);
+            border-radius: 60px 60px 30px 30px; position: relative; z-index: 10;
+            box-shadow: inset 5px 5px 15px rgba(255,255,255,0.1);
         }
-        .vibhuti-lines { position: absolute; top: 50px; width: 100%; text-align: center; opacity: 0.9; }
-        .line { width: 70px; height: 4px; background: #ddd; margin: 4px auto; border-radius: 2px; box-shadow: 0 0 5px white;}
-        .bindi { width: 8px; height: 8px; background: red; border-radius: 50%; margin: 5px auto; box-shadow: 0 0 8px red; }
+        .tripundra { position: absolute; top: 50px; width: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0.85; }
+        .ash-line { width: 70px; height: 3px; background: #ddd; margin: 3px 0; border-radius: 50%; box-shadow: 0 0 5px white; }
+        .bindi { width: 8px; height: 8px; background: #d00; border-radius: 50%; margin-top: 5px; box-shadow: 0 0 8px red; }
+        .yoni { width: 220px; height: 60px; background: #151515; border-radius: 50%; margin-top: -25px; border: 1px solid #333; z-index: 5; background: linear-gradient(to right, #000, #222, #000); }
 
-        .yoni {
-            width: 240px; height: 70px; background: linear-gradient(to right, #0d0d0d, #222, #0d0d0d);
-            border-radius: 100px; margin-top: -30px; position: relative; z-index: 5;
-            border: 1px solid #333;
-        }
-        .yoni-spout {
-            position: absolute; right: -40px; bottom: 20px; width: 80px; height: 40px;
-            background: #111; transform: rotate(10deg); border-radius: 0 10px 10px 0; z-index: 4;
-        }
-
-        /* Diya (Lamp) */
-        .diya-container {
-            position: absolute; bottom: 50px; cursor: pointer; z-index: 30;
-        }
-        .diya-svg { width: 80px; fill: #4a3c31; filter: drop-shadow(0 5px 10px #000); }
+        /* Diya */
+        .diya-group { position: absolute; bottom: 80px; cursor: pointer; z-index: 25; }
         .flame {
             position: absolute; top: -20px; left: 50%; transform: translateX(-50%) scale(0);
-            width: 15px; height: 30px; background: radial-gradient(ellipse at center, var(--fire-inner), var(--fire-outer));
-            border-radius: 50% 50% 20px 20px; transition: transform 0.3s;
-            filter: blur(0.5px);
+            width: 12px; height: 25px; background: radial-gradient(var(--gold), red);
+            border-radius: 50% 50% 20px 20px; transition: transform 0.3s; filter: blur(1px);
         }
         .flame.lit { transform: translateX(-50%) scale(1); animation: flicker 0.1s infinite alternate; }
-        @keyframes flicker { 0% { transform: translateX(-50%) scale(1) skewX(2deg); opacity: 0.9; } 100% { transform: translateX(-50%) scale(1.1) skewX(-2deg); opacity: 1; } }
 
+        .timer-float { font-family: var(--font-head); font-size: 2.5rem; color: var(--gold); margin-top: 20px; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
+        .btn-meditate {
+            margin-top: 10px; background: transparent; border: 1px solid var(--gold); color: var(--gold);
+            padding: 10px 30px; border-radius: 30px; text-transform: uppercase; letter-spacing: 2px;
+            font-family: var(--font-body); cursor: pointer; transition: 0.3s;
+        }
+        .btn-meditate.active { background: var(--gold); color: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
 
-        /* --- 5. TABS & CONTROLS (Below Lingam) --- */
-        .controls-bar {
-            width: 100%; background: rgba(10,10,10,0.95);
-            border-top: 1px solid #333; padding: 20px 10px;
-            display: flex; flex-direction: column; align-items: center;
-            backdrop-filter: blur(5px);
+        /* --- TAB 2: THE ASCENT (Mountain) --- */
+        #tab-mountain { 
+            background: linear-gradient(to top, #050505, #1a253a); 
+            height: 200vh; /* Allow scrolling */
+            position: relative; overflow: hidden;
         }
         
-        .timer-text { font-family: var(--font-head); font-size: 3rem; color: var(--copper); margin-bottom: 15px; }
+        /* Animated Environment */
+        .cloud { position: absolute; background: rgba(255,255,255,0.05); border-radius: 50%; filter: blur(20px); animation: float linear infinite; }
+        @keyframes float { from { transform: translateX(-100%); } to { transform: translateX(100vw); } }
+        .wind-particle { position: absolute; width: 100px; height: 1px; background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent); animation: wind 3s infinite linear; }
+        @keyframes wind { from { transform: translateX(-100px); } to { transform: translateX(100vw); } }
+
+        /* The Peak (Top of scroll) */
+        .peak-container {
+            position: absolute; top: 50px; width: 100%; display: flex; flex-direction: column; align-items: center;
+            z-index: 10;
+        }
+        .golden-shiva {
+            width: 60px; height: 100px; background: linear-gradient(to bottom, #ffd700, #b8860b);
+            border-radius: 40px 40px 20px 20px; box-shadow: 0 0 30px var(--gold);
+        }
+        .peak-text { text-align: center; color: var(--gold); font-family: var(--font-head); margin-top: 10px; text-shadow: 0 0 10px black; }
+
+        /* Steps */
+        .climb-path {
+            position: absolute; width: 100%; top: 250px; display: flex; flex-direction: column; align-items: center; gap: 150px; padding-bottom: 100px;
+        }
+        .step-marker {
+            background: rgba(0,0,0,0.6); border: 1px solid var(--gold); padding: 15px; border-radius: 8px;
+            text-align: center; width: 80%; backdrop-filter: blur(5px);
+        }
+        .step-title { color: var(--gold); font-weight: bold; text-transform: uppercase; }
+
+        /* --- TAB 3: CHANT (Recorder) --- */
+        .chant-ui {
+            padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;
+            text-align: center;
+        }
+        .visualizer {
+            display: flex; gap: 5px; height: 50px; align-items: center; margin: 30px 0;
+        }
+        .bar { width: 5px; background: #333; height: 10px; border-radius: 2px; transition: 0.1s; }
+        .recording .bar { background: red; animation: wave 0.5s infinite ease-in-out alternate; }
+        @keyframes wave { 0% { height: 10px; } 100% { height: 50px; } }
         
-        .nav-tabs { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 600px; }
-        .nav-btn {
-            background: transparent; border: 1px solid #444; color: #888;
-            padding: 10px 15px; border-radius: 20px; cursor: pointer;
-            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
-            transition: 0.3s;
+        .mic-btn {
+            width: 80px; height: 80px; border-radius: 50%; border: 2px solid #444;
+            display: flex; align-items: center; justify-content: center; font-size: 2rem;
+            color: #444; cursor: pointer; transition: 0.3s;
         }
-        .nav-btn:hover, .nav-btn.active { border-color: var(--copper); color: var(--copper); background: rgba(194,126,72,0.1); }
+        .mic-btn.active { border-color: red; color: red; box-shadow: 0 0 20px rgba(255,0,0,0.3); }
 
-        /* Dynamic Modules */
-        .module-box { width: 100%; max-width: 500px; background: #111; padding: 10px; border-radius: 8px; margin-top: 15px; display: none; border: 1px solid #333; }
-        .module-box.show { display: block; animation: slideUp 0.3s; }
-        @keyframes slideUp { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        video { width: 100%; border-radius: 5px; transform: scaleX(-1); background: #000; }
-
-        /* --- 6. HIMALAYA PARALLAX (Realistic) --- */
-        .mountain-section {
-            position: relative; background: #080808; overflow: hidden;
-            padding-top: 50px; padding-bottom: 100px; min-height: 120vh;
-        }
+        /* --- TAB 4: WISDOM (Spotify/Youtube) --- */
+        .wisdom-ui { padding: 20px; padding-top: 40px; }
         
-        /* Mist Overlay */
-        .mist {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, #000 0%, transparent 20%, transparent 80%, #000 100%);
-            z-index: 10; pointer-events: none;
+        .daily-quote-box {
+            background: linear-gradient(135deg, #111, #222); border-left: 3px solid var(--gold);
+            padding: 20px; border-radius: 0 10px 10px 0; margin-bottom: 30px;
         }
+        .quote-text { font-style: italic; color: #ddd; font-family: var(--font-head); font-size: 1.1rem; }
+        
+        .section-head { color: var(--ash); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 5px; }
 
-        /* Mountains */
-        .mtn { position: absolute; bottom: 0; width: 100%; }
-        .mtn-1 { height: 80%; background: #111; clip-path: polygon(0% 100%, 30% 20%, 60% 80%, 80% 30%, 100% 100%); opacity: 0.5; }
-        .mtn-2 { height: 50%; background: #161616; clip-path: polygon(0% 100%, 20% 40%, 50% 90%, 80% 50%, 100% 100%); opacity: 0.8; z-index: 2; }
-        .mtn-3 { height: 25%; background: linear-gradient(to top, #000, #1c1c1c); clip-path: polygon(0% 100%, 40% 10%, 100% 100%); z-index: 3; opacity: 1; }
+        .mood-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 30px; }
+        .mood-card {
+            background: #1a1a1a; padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid #333; transition: 0.3s;
+        }
+        .mood-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+        .mood-card.active { background: var(--gold); color: black; border-color: var(--gold); }
+        
+        #spotify-frame { width: 100%; border-radius: 12px; height: 80px; border: none; transition: opacity 0.5s; }
 
-        .path-title {
-            text-align: center; font-family: var(--font-head); font-size: 2rem; color: #ddd;
-            margin-bottom: 60px; position: relative; z-index: 20; text-shadow: 0 0 20px black;
+        .learn-links a {
+            display: block; padding: 15px; margin-bottom: 10px; background: rgba(255,255,255,0.05);
+            color: #ccc; text-decoration: none; border-radius: 5px; display: flex; justify-content: space-between;
         }
-
-        /* The 7 Steps Journey */
-        .steps-container {
-            max-width: 600px; margin: 0 auto; position: relative; z-index: 20;
-            display: flex; flex-direction: column; gap: 40px; padding: 0 20px;
-        }
-        .step-unit {
-            background: rgba(30, 30, 30, 0.6); border-left: 3px solid var(--copper);
-            padding: 20px; border-radius: 0 10px 10px 0; backdrop-filter: blur(5px);
-            cursor: pointer; transition: 0.3s;
-        }
-        .step-unit:hover { background: rgba(50,50,50,0.8); transform: translateX(10px); }
-        .s-num { font-family: var(--font-head); font-size: 1.5rem; color: #555; position: absolute; right: 20px; top: 10px; }
-        .s-head { color: var(--copper-glow); font-size: 1.1rem; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
-        .s-body { font-size: 0.9rem; color: #bbb; line-height: 1.5; display: none; margin-top: 10px; border-top: 1px solid #444; padding-top: 10px;}
-        .step-unit.active .s-body { display: block; animation: fadeText 0.5s; }
-        @keyframes fadeText { from{ opacity:0; } to { opacity:1; } }
+        .learn-links a:hover { background: rgba(255,255,255,0.1); color: white; }
 
     </style>
 </head>
 <body>
 
-    <svg style="width:0;height:0;position:absolute;">
-        <defs>
-            <linearGradient id="copperGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style="stop-color:#b87333" />
-                <stop offset="50%" style="stop-color:#ffce9e" />
-                <stop offset="100%" style="stop-color:#5c3a1e" />
-            </linearGradient>
-        </defs>
-    </svg>
-
-    <div id="entrance-screen">
-        <div class="bell-rope"></div>
-        <svg class="bell-svg swinging" viewBox="0 0 24 24" onclick="enterApp()">
-            <path d="M12 2C9.243 2 7 4.243 7 7v7H6c-1.103 0-2 .897-2 2v2c0 1.103.897 2 2 2h5.056c.264 1.706 1.724 3 3.444 3s3.18-1.294 3.444-3H18c1.103 0 2-.897 2-2v-2c0-1.103-.897-2-2-2h-1V7c0-2.757-2.243-5-5-5zm-2 7c0-1.103.897-2 2-2s2 .897 2 2v7h-4V9z"/>
-        </svg>
-        <div class="entrance-title">Adiyogi<br><span style="font-size: 0.8rem; color: #666; letter-spacing: 2px;">The Cosmic Ascent</span></div>
+    <div id="gate-screen">
+        <div class="gate-mandala" onclick="enterApp()">
+            <div class="bell-icon">🔔</div>
+        </div>
+        <p style="margin-top:20px; font-family:var(--font-head); color:var(--gold);">Tap for Darshan</p>
     </div>
 
-    <div id="main-app">
+    <div id="app-container">
         
-        <div class="shrine-section">
+        <div class="viewport">
             
-            <div class="shiva-assembly">
-                <div class="pot-container">
-                    <div class="rope-line"></div>
-                    <svg class="pot-svg" viewBox="0 0 100 100" onclick="toggleWater()">
-                        <path d="M30,0 L70,0 L75,10 C85,15 95,30 95,50 C95,80 75,95 50,95 C25,95 5,80 5,50 C5,30 15,15 25,10 L30,0 Z" />
-                    </svg>
-                </div>
-                <div id="water" class="water-stream"></div>
+            <div id="tab-home" class="tab-content active">
+                <div class="sanctum-bg">
+                    <div class="altar-assembly">
+                        <div class="kalash-group" onclick="toggleWater()">
+                            <div class="rope"></div>
+                            <div class="pot-body"></div>
+                            <div id="water" class="water-stream"></div>
+                        </div>
+                        <div class="lingam">
+                            <div class="tripundra">
+                                <div class="ash-line"></div>
+                                <div class="ash-line"></div>
+                                <div class="ash-line"></div>
+                                <div class="bindi"></div>
+                            </div>
+                        </div>
+                        <div class="yoni"></div>
+                        <div class="diya-group" onclick="toggleFire()">
+                            <div id="flame" class="flame"></div>
+                            <svg width="60" viewBox="0 0 100 50">
+                                <path d="M0,20 Q50,60 100,20 L100,25 Q50,70 0,25 Z" fill="#5c2808"/>
+                            </svg>
+                        </div>
+                    </div>
 
-                <div class="lingam">
-                    <div class="vibhuti-lines">
-                        <div class="line"></div>
-                        <div class="line"></div>
-                        <div class="line"></div>
-                        <div class="bindi"></div>
+                    <div id="timer" class="timer-float">00:00</div>
+                    <button class="btn-meditate" onclick="toggleTimer(this)">Start Dhyan</button>
+                    <p style="color:#555; font-size:0.7rem; margin-top:10px;">Tap Pot for Water • Tap Lamp for Fire</p>
+                </div>
+            </div>
+
+            <div id="tab-mountain" class="tab-content">
+                <div id="sky-fx"></div>
+                
+                <div class="peak-container">
+                    <div class="golden-shiva"></div>
+                    <div class="peak-text">ADIYOGI<br><span style="font-size:0.7rem; opacity:0.7">The Eternal Void</span></div>
+                </div>
+
+                <div class="climb-path">
+                    <div class="step-marker" style="margin-top: 100px;">
+                        <div class="step-title">7. Kaivalya</div>
+                        <div style="font-size:0.8rem; color:#aaa">Absolute Freedom</div>
+                    </div>
+                    <div class="step-marker">
+                        <div class="step-title">6. Samadhi</div>
+                        <div style="font-size:0.8rem; color:#aaa">Equilibrium</div>
+                    </div>
+                    <div class="step-marker">
+                        <div class="step-title">5. Dhyana</div>
+                        <div style="font-size:0.8rem; color:#aaa">Absorption</div>
+                    </div>
+                    <div class="step-marker">
+                        <div class="step-title">4. Dharana</div>
+                        <div style="font-size:0.8rem; color:#aaa">Focus</div>
+                    </div>
+                    <div class="step-marker">
+                        <div class="step-title">3. Pratyahara</div>
+                        <div style="font-size:0.8rem; color:#aaa">Withdrawal</div>
+                    </div>
+                    <div class="step-marker">
+                        <div class="step-title">2. Pranayama</div>
+                        <div style="font-size:0.8rem; color:#aaa">Breath</div>
+                    </div>
+                    <div class="step-marker" style="margin-bottom: 50px;">
+                        <div class="step-title">1. Yama</div>
+                        <div style="font-size:0.8rem; color:#aaa">Foundation</div>
+                    </div>
+                    <div style="color: #666; font-size: 0.8rem; margin-bottom: 20px;">^ SCROLL UP TO CLIMB ^</div>
+                </div>
+            </div>
+
+            <div id="tab-chant" class="tab-content">
+                <div class="chant-ui">
+                    <h2 style="font-family:var(--font-head); color:var(--gold);">Mantra Jap</h2>
+                    <p style="color:#aaa;">Chant "Om Namah Shivaya" and record your resonance.</p>
+                    
+                    <div class="visualizer" id="viz">
+                        <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    </div>
+
+                    <div class="mic-btn" id="mic-btn" onclick="toggleRecord()">
+                        🎙
+                    </div>
+                    <p id="rec-status" style="margin-top:10px; color:#555;">Tap to Record</p>
+
+                    <audio id="audio-playback" controls style="margin-top:20px; display:none; width:100%;"></audio>
+                    <a id="audio-dl" style="display:none; color:var(--gold); margin-top:10px;">Download Chant</a>
+                </div>
+            </div>
+
+            <div id="tab-learn" class="tab-content">
+                <div class="wisdom-ui">
+                    <div class="section-head">Quote of the Day</div>
+                    <div class="daily-quote-box">
+                        <div class="quote-text" id="daily-quote">Loading wisdom...</div>
+                    </div>
+
+                    <div class="section-head">Spotify Moods</div>
+                    <div class="mood-grid">
+                        <div class="mood-card active" onclick="loadSpotify('chants', this)">🕉️ Chants</div>
+                        <div class="mood-card" onclick="loadSpotify('tandav', this)">🔥 Tandav</div>
+                        <div class="mood-card" onclick="loadSpotify('flute', this)">🍃 Flute</div>
+                        <div class="mood-card" onclick="loadSpotify('damru', this)">🥁 Damru</div>
+                    </div>
+                    <iframe id="spotify-frame" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX6aTaZa0K6VA?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+                    <div class="section-head" style="margin-top:30px;">Top Learnings</div>
+                    <div class="learn-links">
+                        <a href="https://www.youtube.com/results?search_query=sadhguru+shiva" target="_blank"><span>Sadhguru on Shiva</span> <span>➔</span></a>
+                        <a href="https://www.youtube.com/results?search_query=meaning+of+om+namah+shivaya" target="_blank"><span>Meaning of the Mantra</span> <span>➔</span></a>
+                        <a href="https://www.youtube.com/results?search_query=science+of+lingam" target="_blank"><span>Science of Lingam</span> <span>➔</span></a>
                     </div>
                 </div>
-                <div class="yoni">
-                    <div class="yoni-spout"></div>
-                </div>
-
-                <div class="diya-container" onclick="toggleFire()">
-                    <div id="flame" class="flame"></div>
-                    <svg class="diya-svg" viewBox="0 0 100 50">
-                        <path d="M0,20 Q50,60 100,20 L100,25 Q50,70 0,25 Z" />
-                    </svg>
-                </div>
             </div>
 
         </div>
 
-        <div class="controls-bar">
-            <div id="timer" class="timer-text">00:00</div>
-            
-            <div class="nav-tabs">
-                <button class="nav-btn" onclick="toggleMeditation(this)">Start Dhyan</button>
-                <button class="nav-btn" onclick="toggleWater()">Abhishekam</button>
-                <button class="nav-btn" onclick="toggleFire()">Deepam</button>
-                <button class="nav-btn" onclick="showModule('spotify')">Sound</button>
-                <button class="nav-btn" onclick="showModule('video')">Video</button>
+        <div class="nav-dock">
+            <div class="nav-item active" onclick="switchTab('home', this)">
+                <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <span>Sanctum</span>
             </div>
-
-            <div id="mod-spotify" class="module-box">
-                <p style="color:#666; font-size:0.8rem; margin-bottom:5px;">Shiva Chants (Spotify)</p>
-                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DWXj5e45aU2R2?utm_source=generator&theme=02" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <div class="nav-item" onclick="switchTab('mountain', this)">
+                <svg viewBox="0 0 24 24"><path d="M14 6l-3.75 5 2.85 3.8-1.6 1.2C9.81 13.75 7 10 7 10l-6 8h22L14 6z"/></svg>
+                <span>Ascent</span>
             </div>
-
-            <div id="mod-video" class="module-box">
-                <video id="webcam" autoplay muted></video>
-                <button class="nav-btn" style="width:100%; border-color:red; color:red; margin-top:5px;" onclick="handleCamera(this)">Start Camera</button>
-                <a id="dl-link" style="display:none; color:var(--copper); margin-top:10px; text-align:center;">Download Video</a>
+            <div class="nav-item" onclick="switchTab('chant', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zM17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/></svg>
+                <span>Chant</span>
             </div>
-        </div>
-
-        <div class="mountain-section">
-            <div class="mist"></div>
-            <div class="mtn mtn-1"></div>
-            <div class="mtn mtn-2"></div>
-            <div class="mtn mtn-3"></div>
-
-            <h2 class="path-title">THE 7 STEPS</h2>
-
-            <div class="steps-container">
-                <div class="step-unit" onclick="this.classList.toggle('active')">
-                    <div class="s-num">1</div>
-                    <div class="s-head">Shravana</div>
-                    <div class="s-body">Listening. The first step is to shut the mouth and open the ears of the soul. Listen to the silence behind the noise.</div>
-                </div>
-                <div class="step-unit" onclick="this.classList.toggle('active')">
-                    <div class="s-num">2</div>
-                    <div class="s-head">Manana</div>
-                    <div class="s-body">Contemplation. Churning the knowledge. Asking 'Who am I?' until the question dissolves the questioner.</div>
-                </div>
-                <div class="step-unit" onclick="this.classList.toggle('active')">
-                    <div class="s-num">3</div>
-                    <div class="s-head">Nididhyasana</div>
-                    <div class="s-body">Meditation. The flow of oil. Unbroken awareness. The observer and observed are distinct but connected.</div>
-                </div>
-                <div class="step-unit" onclick="this.classList.toggle('active')">
-                    <div class="s-num">4</div>
-                    <div class="s-head">Dharana</div>
-                    <div class="s-body">Focus. The third eye. Bringing all energies to a single point of fire.</div>
-                </div>
-                <div class="step-unit" onclick="this.classList.toggle('active')">
-                    <div class="s-num">5</div>
-                    <div class="s-head">Dhyana</div>
-                    <div class="s-body">Absorption. You do not meditate on Shiva; you become Shiva. The boundaries blur.</div>
-                </div>
-                <div class="step-unit" onclick="this.classList.toggle('active')">
-                    <div class="s-num">6</div>
-                    <div class="s-head">Samadhi</div>
-                    <div class="s-body">The Equilibrium. No high, no low. Just pure existence. Sat-Chit-Ananda.</div>
-                </div>
-                <div class="step-unit" onclick="this.classList.toggle('active')">
-                    <div class="s-num">7</div>
-                    <div class="s-head">Kaivalya</div>
-                    <div class="s-body">Aloneness. Not loneliness, but the realization that you are the All. The drop returns to the Ocean.</div>
-                </div>
+            <div class="nav-item" onclick="switchTab('learn', this)">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+                <span>Guide</span>
             </div>
         </div>
 
     </div>
 
     <script>
-        // --- AUDIO ENGINE ---
-        let audioCtx, waterNode;
+        // --- 1. AUDIO ENGINE (Temple Bell Synthesis) ---
+        let audioCtx;
+        function initAudio() { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
 
-        function initAudio() {
-            if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-
-        function playBell() {
+        function playIndianBell() {
             initAudio();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.frequency.value = 200;
-            osc.type = 'triangle';
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.05);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 3);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 3);
-        }
-
-        function toggleWaterSound(play) {
-            initAudio();
-            if(play) {
-                if(waterNode) return;
-                const bufferSize = 2 * audioCtx.sampleRate;
-                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-                
-                const noise = audioCtx.createBufferSource();
-                noise.buffer = buffer;
-                noise.loop = true;
-                const filter = audioCtx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.value = 400;
+            const now = audioCtx.currentTime;
+            
+            // Create multiple oscillators for rich harmonics (Ghanta sound)
+            const freqs = [200, 560, 900, 1400]; // Fundamental and discordant partials
+            const gains = [0.8, 0.4, 0.2, 0.1];
+            
+            freqs.forEach((f, i) => {
+                const osc = audioCtx.createOscillator();
                 const gain = audioCtx.createGain();
-                gain.gain.value = 0.2;
+                osc.frequency.value = f;
+                osc.type = i === 0 ? 'triangle' : 'sine';
                 
-                noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
-                noise.start();
-                waterNode = { noise, gain };
-            } else {
-                if(waterNode) {
-                    waterNode.noise.stop();
-                    waterNode = null;
-                }
-            }
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(gains[i], now + 0.02); // Sharp attack
+                gain.gain.exponentialRampToValueAtTime(0.001, now + (4 - i*0.5)); // Long decay
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 4);
+            });
         }
 
-        // --- UI LOGIC ---
+        // --- 2. CORE FUNCTIONS ---
 
         function enterApp() {
-            playBell();
-            document.querySelector('.bell-svg').classList.remove('swinging');
+            playIndianBell();
+            document.getElementById('gate-screen').style.opacity = 0;
             setTimeout(() => {
-                document.getElementById('entrance-screen').style.opacity = 0;
-                setTimeout(() => {
-                    document.getElementById('entrance-screen').style.display = 'none';
-                    document.getElementById('main-app').style.opacity = 1;
-                }, 1500);
-            }, 500);
+                document.getElementById('gate-screen').style.display = 'none';
+                document.getElementById('app-container').style.opacity = 1;
+                switchTab('home', document.querySelector('.nav-item')); // Load Home
+                generateSky(); // Start clouds
+                loadDailyQuote(); // Load quote
+            }, 1000);
         }
 
-        function toggleWater() {
-            const el = document.getElementById('water');
-            if(el.classList.contains('flowing')) {
-                el.classList.remove('flowing');
-                toggleWaterSound(false);
-            } else {
-                el.classList.add('flowing');
-                toggleWaterSound(true);
+        function switchTab(tabId, el) {
+            // UI Update
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-'+tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(el) el.classList.add('active');
+            
+            // Special reset for mountain to scroll to bottom
+            if(tabId === 'mountain') {
+                setTimeout(() => {
+                    const mtn = document.getElementById('tab-mountain');
+                    mtn.scrollTop = mtn.scrollHeight; // Start at bottom
+                }, 100);
             }
         }
 
+        // --- 3. SANCTUM LOGIC ---
+        function toggleWater() {
+            const el = document.getElementById('water');
+            el.classList.toggle('flowing');
+        }
         function toggleFire() {
             document.getElementById('flame').classList.toggle('lit');
         }
 
-        function showModule(type) {
-            document.querySelectorAll('.module-box').forEach(b => b.classList.remove('show'));
-            document.getElementById('mod-' + type).classList.add('show');
-        }
-
-        // Timer
-        let timerInt;
-        let seconds = 0;
-        let isRunning = false;
-        function toggleMeditation(btn) {
-            if(isRunning) {
-                clearInterval(timerInt);
-                isRunning = false;
+        let timerInt, seconds = 0, isMeditating = false;
+        function toggleTimer(btn) {
+            if(isMeditating) {
+                clearInterval(timerInt); isMeditating = false;
                 btn.innerText = "Start Dhyan";
-                btn.style.borderColor = "#444";
-                btn.style.color = "#888";
+                btn.classList.remove('active');
             } else {
-                isRunning = true;
-                playBell();
+                playIndianBell();
+                isMeditating = true;
                 btn.innerText = "Stop";
-                btn.style.borderColor = "var(--copper)";
-                btn.style.color = "var(--copper)";
+                btn.classList.add('active');
                 timerInt = setInterval(() => {
                     seconds++;
-                    const m = Math.floor(seconds/60).toString().padStart(2,'0');
-                    const s = (seconds%60).toString().padStart(2,'0');
+                    let m = Math.floor(seconds/60).toString().padStart(2,'0');
+                    let s = (seconds%60).toString().padStart(2,'0');
                     document.getElementById('timer').innerText = `${m}:${s}`;
                 }, 1000);
             }
         }
 
-        // Camera
-        let mediaRecorder;
-        let chunks = [];
-        async function handleCamera(btn) {
-            const vid = document.getElementById('webcam');
-            if(btn.innerText === "Start Camera") {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({video:true});
-                    vid.srcObject = stream;
-                    mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.ondataavailable = e => chunks.push(e.data);
-                    mediaRecorder.onstop = e => {
-                        const blob = new Blob(chunks, {type:'video/webm'});
-                        const url = URL.createObjectURL(blob);
-                        const a = document.getElementById('dl-link');
-                        a.href = url;
-                        a.download = 'meditation.webm';
-                        a.style.display = 'block';
-                    };
-                    mediaRecorder.start();
-                    btn.innerText = "Stop Recording";
-                } catch(e) { alert("Camera Error"); }
-            } else {
-                mediaRecorder.stop();
-                vid.srcObject.getTracks().forEach(t => t.stop());
-                btn.innerText = "Start Camera";
+        // --- 4. MOUNTAIN LOGIC ---
+        function generateSky() {
+            const sky = document.getElementById('sky-fx');
+            // Add clouds
+            for(let i=0; i<10; i++) {
+                let c = document.createElement('div');
+                c.className = 'cloud';
+                c.style.width = Math.random()*200 + 100 + 'px';
+                c.style.height = c.style.width;
+                c.style.top = Math.random()*100 + '%';
+                c.style.animationDuration = Math.random()*20 + 20 + 's';
+                sky.appendChild(c);
+            }
+            // Add wind
+            for(let i=0; i<5; i++) {
+                let w = document.createElement('div');
+                w.className = 'wind-particle';
+                w.style.top = Math.random()*100 + '%';
+                w.style.animationDelay = Math.random()*2 + 's';
+                sky.appendChild(w);
             }
         }
 
-    </script>
-</body>
-</html>
+        // --- 5. AUDIO RECORDER ---
+        let mediaRecorder, chunks = [];
+        async function toggleRecord() {
