@@ -3,481 +3,429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adiyogi Dhyan - The Eternal Echo</title>
+    <title>Adiyogi: The Eternal Silence</title>
     <style>
-        :root {
-            --stone: #1a1a1a;
-            --copper: #b87333;
-            --copper-light: #e6a36c;
-            --ash: #cfcfcf;
-            --flame: #ff5e00;
-            --mist: rgba(255, 255, 255, 0.05);
-            --font-main: 'Cinzel', serif; /* Elegant, spiritual font */
-        }
+        /* --- 1. THEME & FONTS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Playfair+Display:ital@0;1&family=Lato:wght@300;400&display=swap');
 
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300&display=swap');
+        :root {
+            --bg-dark: #090a0c;
+            --stone-dark: #1c1c1c;
+            --copper: #c27e48;
+            --copper-shine: #e6a36c;
+            --flame-core: #fff5d6;
+            --flame-outer: #ff6600;
+            --water-alpha: rgba(189, 218, 255, 0.4);
+            --font-head: 'Cinzel', serif;
+            --font-body: 'Lato', sans-serif;
+        }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+        
         body {
-            margin: 0; padding: 0;
-            background-color: #050505;
-            color: #e0e0e0;
-            font-family: 'Lato', sans-serif;
-            overflow-x: hidden;
+            margin: 0; background-color: var(--bg-dark); color: #ccc;
+            font-family: var(--font-body); overflow-x: hidden;
         }
 
-        h1, h2, h3 { font-family: var(--font-main); letter-spacing: 2px; text-transform: uppercase; color: var(--copper); }
-
-        /* --- 1. ENTRANCE --- */
-        #entrance {
+        /* --- 2. ENTRANCE (Bell) --- */
+        #entrance-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, #222, #000);
-            z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 1.5s ease;
+            background: #000; z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; transition: opacity 1.5s ease;
         }
-        .bell-housing {
-            width: 120px; height: 120px; border: 2px solid var(--copper);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 0 30px rgba(184, 115, 51, 0.2);
-            transition: 0.3s;
-        }
-        .bell-housing:hover { transform: scale(1.1); box-shadow: 0 0 50px rgba(184, 115, 51, 0.5); }
-        .bell-svg { fill: var(--copper); width: 60px; height: 60px; }
-        .swinging { animation: swing 1s ease-in-out infinite; }
-        @keyframes swing { 0% { transform: rotate(15deg); } 50% { transform: rotate(-15deg); } 100% { transform: rotate(15deg); } }
+        .bell-rope { height: 100px; width: 2px; background: #333; margin-bottom: -5px;}
+        .bell-svg { width: 100px; fill: var(--copper); filter: drop-shadow(0 0 15px var(--copper)); cursor: pointer; transform-origin: top center; }
+        .bell-swinging { animation: swing 2s ease-in-out infinite; }
+        @keyframes swing { 0% { transform: rotate(10deg); } 50% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
 
-        /* --- 2. MAIN LAYOUT --- */
-        .app-container { opacity: 0; transition: opacity 1s; }
-        .visible { opacity: 1 !important; }
-
-        /* --- 3. THE SHRINE (Centerpiece) --- */
-        .shrine-section {
-            height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-            position: relative; background: linear-gradient(to top, #000 0%, #111 100%);
-            padding-bottom: 20px;
+        /* --- 3. MAIN SHRINE UI --- */
+        .shrine-container {
+            min-height: 100vh; display: flex; flex-direction: column;
+            background: radial-gradient(circle at center 40%, #2a2a2a 0%, #000 80%);
+            position: relative;
         }
 
-        /* 3D Realistic Lingam */
-        .shiva-base { position: relative; width: 280px; height: 320px; display: flex; justify-content: center; }
+        /* Top Hanging Pot (Abhishekam) */
+        .abhishekam-area {
+            height: 150px; position: relative; width: 100%;
+            display: flex; justify-content: center;
+        }
+        .rope { width: 2px; height: 60px; background: linear-gradient(to bottom, #111, #444); position: absolute; top: 0; }
+        .kalash-svg {
+            width: 80px; position: absolute; top: 50px; z-index: 20; fill: url(#copperGradient);
+            cursor: pointer; transition: transform 0.5s;
+        }
+        .kalash-svg:hover { transform: rotate(-5deg); }
+        .water-flow {
+            position: absolute; top: 110px; left: 50%; transform: translateX(-50%);
+            width: 4px; height: 0; background: linear-gradient(to bottom, rgba(255,255,255,0.6), var(--water-alpha));
+            transition: height 1s ease-in; z-index: 10; opacity: 0.8;
+            filter: blur(0.5px);
+        }
+        .water-flow.flowing { height: 250px; }
+
+        /* Center Shivling */
+        .lingam-area {
+            flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative; margin-top: -20px;
+        }
         
-        .lingam {
-            width: 110px; height: 180px;
-            background: radial-gradient(circle at 35% 25%, #444, #000 80%);
+        /* Realistic Stone Texture via CSS */
+        .lingam-stone {
+            width: 130px; height: 190px;
+            background: radial-gradient(circle at 30% 30%, #4d4d4d, #000000 90%);
             border-radius: 60px 60px 30px 30px;
-            position: relative; z-index: 10;
-            box-shadow: inset -5px -5px 15px rgba(255,255,255,0.05), 0 0 30px rgba(0,0,0,0.8);
+            position: relative; z-index: 5;
+            box-shadow: inset 10px 10px 20px rgba(255,255,255,0.05), 0 20px 50px rgba(0,0,0,0.8);
         }
-        /* Wet Look Highlight */
-        .lingam::after {
-            content: ''; position: absolute; top: 20px; left: 20px;
-            width: 30px; height: 60px; border-radius: 50%;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
-            transform: rotate(-15deg);
-        }
-
-        .tripundra {
-            position: absolute; top: 50px; left: 50%; transform: translateX(-50%); width: 70%;
-        }
+        /* Vibhuti (Three Lines) */
+        .vibhuti { position: absolute; top: 50px; width: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0.85; }
         .ash-line {
-            height: 4px; background: rgba(255,255,255,0.8); margin-bottom: 6px; border-radius: 50%;
-            box-shadow: 0 0 5px rgba(255,255,255,0.5);
+            width: 70%; height: 4px; background: #e0e0e0; margin: 3px 0; border-radius: 50%;
+            box-shadow: 0 0 5px white;
         }
-        
+        .bindi { width: 8px; height: 8px; background: #ff0000; border-radius: 50%; margin-top: 5px; box-shadow: 0 0 8px red; }
+
+        /* Yoni Base */
         .yoni-base {
-            width: 240px; height: 70px; background: #1a1a1a;
-            border-radius: 50%; position: absolute; bottom: 40px;
-            border: 1px solid #333; z-index: 5;
-            background: linear-gradient(to right, #111, #222, #111);
+            width: 260px; height: 80px; background: #1a1a1a;
+            border-radius: 50%; margin-top: -30px; position: relative; z-index: 4;
+            border: 1px solid #333;
+            background: linear-gradient(to right, #000, #222, #000);
         }
         .yoni-spout {
-            width: 80px; height: 50px; background: #1a1a1a; position: absolute; bottom: 50px; right: -40px;
-            transform: rotate(10deg); border-radius: 0 10px 10px 0; z-index: 4;
-            background: linear-gradient(to bottom, #222, #111);
+            position: absolute; right: -40px; bottom: 20px; width: 100px; height: 40px;
+            background: linear-gradient(to bottom, #222, #000); transform: rotate(10deg);
+            border-radius: 0 10px 10px 0; z-index: 3;
         }
 
-        /* Copper Lota */
-        .lota {
-            width: 50px; height: 45px; 
-            background: linear-gradient(135deg, var(--copper), #5c3a1e);
-            border-radius: 5px 5px 20px 20px; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
-            z-index: 20; box-shadow: 0 5px 15px rgba(0,0,0,0.5); cursor: pointer;
-            border-top: 2px solid var(--copper-light);
-            transition: transform 0.5s; display: none;
+        /* Diya (Lamp) */
+        .diya-area {
+            position: absolute; bottom: 0px; z-index: 30; cursor: pointer;
         }
-        .lota.active { display: block; }
-        .lota:hover { transform: translateX(-50%) rotate(-10deg); }
+        .diya-svg { width: 90px; fill: #5a3a29; filter: drop-shadow(0 5px 10px #000); }
+        .flame-container {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 20px; height: 35px; opacity: 0; transition: opacity 1s;
+        }
+        .flame-container.lit { opacity: 1; }
+        .flame-main {
+            width: 100%; height: 100%; border-radius: 50% 50% 20px 20px;
+            background: radial-gradient(ellipse at center, white 20%, var(--flame-outer) 90%);
+            animation: flicker 0.15s infinite alternate;
+            box-shadow: 0 0 20px var(--flame-outer);
+        }
+        @keyframes flicker { 0% { transform: skewX(-2deg) scaleY(1); } 100% { transform: skewX(2deg) scaleY(1.1); } }
 
-        /* Realistic Water Stream */
-        .stream {
-            width: 6px; height: 0; background: rgba(200, 230, 255, 0.4);
-            position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
-            z-index: 9; transition: height 1s; border-radius: 0 0 5px 5px;
-            filter: blur(1px);
-        }
-        .stream.flowing { height: 160px; }
 
-        /* Diya */
-        .diya {
-            width: 60px; height: 30px; background: #3d2b1f; border-radius: 0 0 30px 30px;
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            z-index: 20; border: 1px solid #5c3a1e; display: none; cursor: pointer;
+        /* --- 4. TABS & CONTROLS (Below Shivling) --- */
+        .controls-dock {
+            background: rgba(10, 10, 10, 0.9); border-top: 1px solid #333;
+            padding: 20px; text-align: center; z-index: 50;
+            backdrop-filter: blur(10px);
         }
-        .diya.active { display: block; }
-        .flame {
-            width: 14px; height: 24px; 
-            background: radial-gradient(ellipse at bottom, #ffff00, var(--flame), transparent);
-            position: absolute; left: 50%; top: -20px; transform: translateX(-50%) scale(0);
-            border-radius: 50% 50% 20px 20px; filter: blur(1px); transition: transform 0.3s;
-        }
-        .flame.lit { transform: translateX(-50%) scale(1); animation: flicker 0.1s infinite alternate; }
-        @keyframes flicker { 0% { opacity: 0.9; transform: translateX(-50%) scale(1) skewX(2deg); } 100% { opacity: 1; transform: translateX(-50%) scale(1.1) skewX(-2deg); } }
-
-        /* --- 4. CONTROLS UI --- */
-        .controls-wrapper {
-            position: absolute; bottom: 30px; width: 90%; max-width: 500px;
-            background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(10px);
-            border: 1px solid #333; border-radius: 12px; padding: 15px;
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        .btn-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 15px; }
-        .btn {
+        
+        .tab-row { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn {
             background: transparent; border: 1px solid #444; color: #888;
-            padding: 8px 16px; border-radius: 20px; cursor: pointer;
-            font-size: 0.75rem; text-transform: uppercase; transition: 0.3s;
+            padding: 10px 20px; border-radius: 30px; cursor: pointer;
+            font-family: var(--font-body); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;
+            transition: 0.3s;
         }
-        .btn:hover, .btn.active { border-color: var(--copper); color: var(--copper); background: rgba(184, 115, 51, 0.1); }
-        
-        .timer { font-family: var(--font-main); font-size: 2.5rem; color: var(--copper-light); margin: 5px 0; }
-        .play-btn { 
-            background: var(--copper); color: black; border: none; padding: 10px 30px; 
-            font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 5px;
+        .tab-btn:hover, .tab-btn.active { border-color: var(--copper); color: var(--copper); background: rgba(194, 126, 72, 0.1); }
+
+        .timer-display { font-family: var(--font-head); font-size: 2.5rem; color: var(--copper-shine); margin-bottom: 10px; }
+
+        /* Dynamic Modules */
+        .module-panel { 
+            background: #111; padding: 15px; border-radius: 8px; margin-top: 15px; 
+            border: 1px solid #333; display: none; animation: slideUp 0.4s ease;
+        }
+        .module-panel.active { display: block; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* Video Feed */
+        video { width: 100%; border-radius: 4px; background: #000; margin-bottom: 10px; transform: scaleX(-1); }
+
+        /* --- 5. THE REAL MOUNTAIN (Parallax) --- */
+        .mountain-container {
+            position: relative; background: #050505; min-height: 100vh;
+            overflow: hidden; padding-top: 80px; padding-bottom: 100px;
+        }
+        .fog-layer {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.8) 100%);
+            z-index: 5; pointer-events: none;
+        }
+        .mtn-title {
+            text-align: center; font-family: var(--font-head); font-size: 2rem;
+            color: #ddd; text-shadow: 0 0 20px rgba(255,255,255,0.2);
+            position: relative; z-index: 10; margin-bottom: 60px;
         }
 
-        /* --- 5. HIMALAYA (CSS Art) --- */
-        .himalaya-section {
-            position: relative; min-height: 120vh; background: #0a0a0a;
-            overflow: hidden; padding: 50px 20px;
+        /* CSS Shapes for Mountains */
+        .mountain-shape { position: absolute; bottom: 0; width: 100%; }
+        .m-back { 
+            height: 70%; background: #111; clip-path: polygon(0% 100%, 20% 30%, 40% 60%, 60% 20%, 80% 80%, 100% 40%, 100% 100%);
+            opacity: 0.6; z-index: 1;
         }
-        
-        /* Layered Mountains */
-        .mountain { position: absolute; bottom: 0; width: 100%; }
-        .m-back { height: 60%; background: linear-gradient(to top, #111, #1a1a1a); clip-path: polygon(0% 100%, 20% 40%, 40% 80%, 60% 30%, 80% 90%, 100% 100%); opacity: 0.5; }
-        .m-mid { height: 40%; background: linear-gradient(to top, #0d0d0d, #222); clip-path: polygon(0% 100%, 15% 100%, 50% 20%, 85% 100%, 100% 100%); bottom: -5%; z-index: 2; }
-        .m-mist { width: 100%; height: 200px; background: linear-gradient(to top, transparent, rgba(255,255,255,0.05)); position: absolute; bottom: 0; z-index: 3; pointer-events: none;}
-
-        /* The 7 Steps */
-        .path-container { position: relative; z-index: 10; max-width: 600px; margin: 0 auto; padding-bottom: 100px; }
-        .step-node {
-            display: flex; align-items: center; margin-bottom: 80px; opacity: 0.7; transition: 0.3s; cursor: pointer;
+        .m-mid { 
+            height: 50%; background: #161616; clip-path: polygon(0% 100%, 15% 100%, 40% 30%, 60% 80%, 100% 100%);
+            z-index: 2; bottom: -50px;
         }
-        .step-node:hover { opacity: 1; transform: scale(1.02); }
-        .step-node:nth-child(even) { flex-direction: row-reverse; text-align: right; }
-        
-        .node-marker {
-            width: 40px; height: 40px; background: var(--copper); color: #000;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-family: var(--font-main); box-shadow: 0 0 20px rgba(184, 115, 51, 0.4);
-            flex-shrink: 0;
-        }
-        .node-content { margin: 0 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border-left: 2px solid var(--copper); }
-        .node-title { color: var(--copper-light); font-weight: bold; display: block; margin-bottom: 5px; }
-        .node-desc { font-size: 0.85rem; color: #aaa; line-height: 1.4; display: none; }
-        .step-node.active .node-desc { display: block; animation: fadeIn 0.5s; }
-
-        /* --- 6. MODULES (Video, Spotify) --- */
-        .modules-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 15px;
-        }
-        .module-card {
-            background: #111; padding: 10px; border-radius: 8px; border: 1px solid #333;
-            text-align: center;
+        .m-front {
+            height: 30%; background: linear-gradient(to top, #000, #1a1a1a);
+            clip-path: polygon(0% 100%, 0% 50%, 30% 0%, 60% 40%, 100% 100%);
+            z-index: 3; bottom: 0; opacity: 0.9;
         }
 
-        /* Camera Feed */
-        #video-feed { width: 100%; height: 100px; background: #000; object-fit: cover; border-radius: 4px; display: none; }
-        
+        /* The 7 Steps Journey */
+        .journey-path {
+            position: relative; z-index: 10; max-width: 700px; margin: 0 auto;
+            display: flex; flex-direction: column; gap: 80px;
+        }
+        .step-card {
+            background: rgba(255,255,255,0.03); border-left: 3px solid var(--copper);
+            padding: 20px; margin: 0 20px; cursor: pointer; transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .step-card:hover { background: rgba(255,255,255,0.07); transform: translateX(10px); }
+        .step-num { font-family: var(--font-head); font-size: 3rem; color: rgba(255,255,255,0.1); position: absolute; right: 20px; top: 0; }
+        .step-title { color: var(--copper-shine); font-size: 1.1rem; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+        .step-desc { font-size: 0.9rem; color: #aaa; line-height: 1.5; display: none; }
+        .step-card.open .step-desc { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     </style>
 </head>
 <body>
 
-    <div id="entrance">
-        <div class="bell-housing" onclick="initApp()">
-            <svg class="bell-svg" viewBox="0 0 24 24">
-                <path d="M12 2C9.243 2 7 4.243 7 7v7H6c-1.103 0-2 .897-2 2v2c0 1.103.897 2 2 2h5.056c.264 1.706 1.724 3 3.444 3s3.18-1.294 3.444-3H18c1.103 0 2-.897 2-2v-2c0-1.103-.897-2-2-2h-1V7c0-2.757-2.243-5-5-5zm-2 7c0-1.103.897-2 2-2s2 .897 2 2v7h-4V9z"/>
-            </svg>
-        </div>
-        <p style="margin-top: 20px; font-family: var(--font-main); color: var(--copper);">Tap to Awaken</p>
+    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1">
+        <defs>
+            <linearGradient id="copperGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#b87333;stop-opacity:1" />
+                <stop offset="50%" style="stop-color:#ffce9e;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#5c3a1e;stop-opacity:1" />
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <div id="entrance-overlay">
+        <div class="bell-rope"></div>
+        <svg class="bell-svg bell-swinging" viewBox="0 0 24 24" onclick="enterSanctum()">
+            <path d="M12 2C9.243 2 7 4.243 7 7v7H6c-1.103 0-2 .897-2 2v2c0 1.103.897 2 2 2h5.056c.264 1.706 1.724 3 3.444 3s3.18-1.294 3.444-3H18c1.103 0 2-.897 2-2v-2c0-1.103-.897-2-2-2h-1V7c0-2.757-2.243-5-5-5zm-2 7c0-1.103.897-2 2-2s2 .897 2 2v7h-4V9z"/>
+        </svg>
+        <p style="margin-top: 30px; font-family: var(--font-head); color: #666; letter-spacing: 2px;">RING THE BELL</p>
     </div>
 
-    <div id="app" class="app-container">
+    <div id="app-wrapper" style="opacity: 0; transition: opacity 1s;">
         
-        <section class="shrine-section">
+        <div class="shrine-container">
             
-            <div class="shiva-base">
-                
-                <div id="lota" class="lota" onclick="toggleWater()"></div>
-                <div id="stream" class="stream"></div>
+            <div class="abhishekam-area">
+                <div class="rope"></div>
+                <svg class="kalash-svg" viewBox="0 0 100 100" onclick="toggleWater()">
+                    <path d="M30,0 L70,0 L75,10 C85,15 95,30 95,50 C95,80 75,95 50,95 C25,95 5,80 5,50 C5,30 15,15 25,10 L30,0 Z" />
+                </svg>
+                <div id="stream" class="water-flow"></div>
+            </div>
 
-                <div class="lingam">
-                    <div class="tripundra">
+            <div class="lingam-area">
+                <div class="lingam-stone">
+                    <div class="vibhuti">
                         <div class="ash-line"></div>
                         <div class="ash-line"></div>
                         <div class="ash-line"></div>
+                        <div class="bindi"></div>
                     </div>
                 </div>
-                <div class="yoni-base"></div>
-                <div class="yoni-spout"></div>
+                <div class="yoni-base">
+                    <div class="yoni-spout"></div>
+                </div>
 
-                <div id="diya" class="diya" onclick="toggleFire()">
-                    <div class="flame" id="flame"></div>
+                <div class="diya-area" onclick="toggleFire()">
+                    <div id="flame" class="flame-container">
+                        <div class="flame-main"></div>
+                    </div>
+                    <svg class="diya-svg" viewBox="0 0 100 50">
+                        <path d="M0,20 Q50,60 100,20 L100,25 Q50,70 0,25 Z" fill="#5c3a1e"/>
+                        <ellipse cx="50" cy="20" rx="50" ry="10" fill="#3d2614"/>
+                    </svg>
                 </div>
             </div>
 
-            <div class="controls-wrapper">
-                <div class="timer" id="timer">00:00</div>
+            <div class="controls-dock">
+                <div class="timer-display" id="timer">00:00</div>
                 
-                <div class="btn-group">
-                    <button class="btn" onclick="setMode('silence')">Silence</button>
-                    <button class="btn" onclick="setMode('water')">Jala (Water)</button>
-                    <button class="btn" onclick="setMode('fire')">Agni (Fire)</button>
-                    <button class="btn" onclick="setMode('sound')">Naad (Sound)</button>
+                <div class="tab-row">
+                    <button class="tab-btn" onclick="activateTab('meditate')">Start Dhyan</button>
+                    <button class="tab-btn" onclick="toggleWater()">Abhishekam</button>
+                    <button class="tab-btn" onclick="toggleFire()">Deepam</button>
+                    <button class="tab-btn" onclick="activateTab('sound')">Sound</button>
+                    <button class="tab-btn" onclick="activateTab('video')">Video Rec</button>
                 </div>
 
-                <div class="modules-grid hidden" id="extra-modules">
-                    
-                    <div class="module-card">
-                        <div style="font-size: 0.8rem; color: #aaa; margin-bottom: 5px;">Meditation Cam</div>
-                        <video id="video-feed" autoplay muted></video>
-                        <button id="rec-btn" class="btn" style="width: 100%; margin-top:5px;" onclick="toggleCamera()">Start Camera</button>
-                        <a id="download-link" style="display:none; color: var(--copper); font-size: 0.7rem; margin-top: 5px;">Download Video</a>
-                    </div>
-
-                    <div class="module-card">
-                        <iframe style="border-radius:8px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX0j5e2e8yXz1?utm_source=generator&theme=0" width="100%" height="100" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-                    </div>
-
+                <div id="mod-sound" class="module-panel">
+                    <p style="color:#888; margin-bottom:10px;">Spotify Integration</p>
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX03b46viwyt5?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                 </div>
 
-                <button class="play-btn" id="main-action-btn" onclick="toggleMeditation()">BEGIN DHYAN</button>
-                <div style="font-size: 0.7rem; color: #555; margin-top: 10px;">*Use headphones for immersion</div>
+                <div id="mod-video" class="module-panel">
+                    <video id="webcam" autoplay muted></video>
+                    <button class="tab-btn" style="width:100%; border-color: red; color: red;" onclick="toggleCamera(this)">Start Camera</button>
+                    <a id="dl-btn" style="display:none; color: var(--copper); margin-top:10px;">Download Video</a>
+                </div>
             </div>
-        </section>
+        </div>
 
-        <section class="himalaya-section">
-            <h2 style="text-align: center; margin-bottom: 50px;">The 7 Steps to Adiyogi</h2>
+        <div class="mountain-container">
+            <div class="fog-layer"></div>
             
-            <div class="mountain m-back"></div>
-            <div class="mountain m-mid"></div>
-            <div class="mountain m-mist"></div>
+            <div class="mountain-shape m-back"></div>
+            <div class="mountain-shape m-mid"></div>
+            <div class="mountain-shape m-front"></div>
 
-            <div class="path-container">
-                <div class="step-node" onclick="toggleStep(this)">
-                    <div class="node-marker">1</div>
-                    <div class="node-content">
-                        <span class="node-title">Shravana (Listening)</span>
-                        <div class="node-desc">The journey begins by listening to the silence within. Shut out the noise of the world.</div>
-                    </div>
+            <h2 class="mtn-title">THE ASCENT OF SHIVA</h2>
+
+            <div class="journey-path">
+                <div class="step-card" onclick="this.classList.toggle('open')">
+                    <div class="step-num">1</div>
+                    <div class="step-title">Mount Kailash (The Abode)</div>
+                    <div class="step-desc">The journey begins at the base. Stability. Grounding yourself in the physical reality before transcending it.</div>
                 </div>
-                <div class="step-node" onclick="toggleStep(this)">
-                    <div class="node-marker">2</div>
-                    <div class="node-content">
-                        <span class="node-title">Manana (Contemplation)</span>
-                        <div class="node-desc">Reflect on the nature of 'I'. Who is the one observing the breath?</div>
-                    </div>
+                <div class="step-card" onclick="this.classList.toggle('open')">
+                    <div class="step-num">2</div>
+                    <div class="step-title">Manasarovar (The Mind)</div>
+                    <div class="step-desc">Like the lake, the mind must become still. Ripples of thought distort the reflection of the truth.</div>
                 </div>
-                <div class="step-node" onclick="toggleStep(this)">
-                    <div class="node-marker">3</div>
-                    <div class="node-content">
-                        <span class="node-title">Nididhyasana (Meditation)</span>
-                        <div class="node-desc">Unbroken flow of awareness. Like oil pouring from one vessel to another.</div>
-                    </div>
+                <div class="step-card" onclick="this.classList.toggle('open')">
+                    <div class="step-num">3</div>
+                    <div class="step-title">Nandi (The Wait)</div>
+                    <div class="step-desc">Eternal waiting without expectation. To be meditative is to be willing to wait forever.</div>
                 </div>
-                 <div class="step-node" onclick="toggleStep(this)">
-                    <div class="node-marker">4</div>
-                    <div class="node-content">
-                        <span class="node-title">Dharana (Focus)</span>
-                        <div class="node-desc">Binding the mind to a single point. The Trinetra (Third Eye).</div>
-                    </div>
+                <div class="step-card" onclick="this.classList.toggle('open')">
+                    <div class="step-num">4</div>
+                    <div class="step-title">Rudra (The Roar)</div>
+                    <div class="step-desc">Breaking the patterns. The roar that destroys the ego. The fierce energy needed to break inertia.</div>
                 </div>
-                 <div class="step-node" onclick="toggleStep(this)">
-                    <div class="node-marker">5</div>
-                    <div class="node-content">
-                        <span class="node-title">Dhyana (Absorption)</span>
-                        <div class="node-desc">The observer and the observed begin to merge. You are not doing meditation; you become it.</div>
-                    </div>
+                <div class="step-card" onclick="this.classList.toggle('open')">
+                    <div class="step-num">5</div>
+                    <div class="step-title">Neelkanth (The Poison)</div>
+                    <div class="step-desc">Accepting the negatives of the world without letting them enter your system. Holding the poison in the throat.</div>
                 </div>
-                 <div class="step-node" onclick="toggleStep(this)">
-                    <div class="node-marker">6</div>
-                    <div class="node-content">
-                        <span class="node-title">Samadhi (Oneness)</span>
-                        <div class="node-desc">The stillness of Shiva. Total equilibrium. No inside, no outside.</div>
-                    </div>
+                <div class="step-card" onclick="this.classList.toggle('open')">
+                    <div class="step-num">6</div>
+                    <div class="step-title">Trinetra (The Vision)</div>
+                    <div class="step-desc">The third eye opens. Perception beyond the five senses. Seeing life as it is, not as you think it is.</div>
                 </div>
-                 <div class="step-node" onclick="toggleStep(this)">
-                    <div class="node-marker">7</div>
-                    <div class="node-content">
-                        <span class="node-title">Kaivalya (Liberation)</span>
-                        <div class="node-desc">Absolute freedom. The realization that you are the universe. Adiyogi state.</div>
-                    </div>
+                <div class="step-card" onclick="this.classList.toggle('open')">
+                    <div class="step-num">7</div>
+                    <div class="step-title">Adiyogi (The Void)</div>
+                    <div class="step-desc">Complete union. You are not a part of the universe; you are the universe. Shambo.</div>
                 </div>
             </div>
-        </section>
-        
-        <section style="background: #111; padding: 40px 20px; text-align: center; border-top: 1px solid #333;">
-            <h3>Wisdom of the Masters</h3>
-            <p style="color: #777; margin-bottom: 20px;">External Guidance for your Journey</p>
-            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
-                <a href="https://www.youtube.com/results?search_query=sadhguru+meditation" target="_blank" class="btn">Sadhguru Guided</a>
-                <a href="https://www.youtube.com/results?search_query=shiva+tandava+stotram" target="_blank" class="btn">Tandava Stotram</a>
-                <a href="https://www.youtube.com/results?search_query=om+namah+shivaya+chanting" target="_blank" class="btn">108 Chants</a>
-            </div>
-        </section>
+        </div>
 
     </div>
 
     <script>
-        // --- 1. PROCEDURAL AUDIO ENGINE (Web Audio API) ---
-        // This creates sounds mathematically so no external files are needed.
-        let audioCtx;
-        let waterGain, bowlGain, droneGain;
-        let isWaterPlaying = false;
-
+        // --- AUDIO ENGINE (No External Files) ---
+        let audioCtx, waterNode, bowlNode;
+        
         function initAudio() {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioCtx = new AudioContext();
-            
-            // Create Master Volume
-            const masterGain = audioCtx.createGain();
-            masterGain.gain.value = 0.5;
-            masterGain.connect(audioCtx.destination);
+            if(!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
         }
 
-        // Sound 1: Tibetan Bowl (FM Synthesis)
-        function playBowl() {
-            if (!audioCtx) return;
+        // Procedural Water Sound (White Noise + Filter)
+        function playWaterSound(enable) {
+            initAudio();
+            if(enable) {
+                if(waterNode) return; 
+                const bufferSize = 2 * audioCtx.sampleRate;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                noise.loop = true;
+                
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 400;
+
+                const gain = audioCtx.createGain();
+                gain.gain.value = 0.15; // Soft flow
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                noise.start();
+                waterNode = { src: noise, gain: gain };
+            } else {
+                if(waterNode) {
+                    waterNode.src.stop();
+                    waterNode = null;
+                }
+            }
+        }
+
+        // Procedural Bell Sound (FM Synth)
+        function playBellSound() {
+            initAudio();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            
-            osc.frequency.value = 180; // Low frequency
+            osc.frequency.value = 220; // A3
             osc.type = 'sine';
             
-            // Harmonic
+            // Overtones
             const osc2 = audioCtx.createOscillator();
-            osc2.frequency.value = 530;
-            osc2.type = 'sine';
+            osc2.frequency.value = 540;
             const gain2 = audioCtx.createGain();
-            gain2.gain.value = 0.2;
+            gain2.gain.value = 0.3;
 
             osc.connect(gain);
             osc2.connect(gain2);
             gain.connect(audioCtx.destination);
             gain2.connect(audioCtx.destination);
 
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 6); // Long decay
+            const now = audioCtx.currentTime;
+            gain.gain.setValueAtTime(0, now);
+            gain.gain.linearRampToValueAtTime(0.5, now + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 4);
 
-            gain2.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain2.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 0.1);
-            gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 5);
+            gain2.gain.setValueAtTime(0, now);
+            gain2.gain.linearRampToValueAtTime(0.2, now + 0.05);
+            gain2.gain.exponentialRampToValueAtTime(0.001, now + 3);
 
-            osc.start();
-            osc2.start();
-            osc.stop(audioCtx.currentTime + 6);
-            osc2.stop(audioCtx.currentTime + 6);
+            osc.start(); osc2.start();
+            osc.stop(now + 4); osc2.stop(now + 4);
         }
 
-        // Sound 2: Water (White Noise + Lowpass Filter)
-        function toggleWaterSound(play) {
-            if (!audioCtx) return;
-            if (play) {
-                if (isWaterPlaying) return;
-                const bufferSize = 2 * audioCtx.sampleRate;
-                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const output = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    output[i] = Math.random() * 2 - 1;
-                }
+        // --- APP LOGIC ---
 
-                const whiteNoise = audioCtx.createBufferSource();
-                whiteNoise.buffer = buffer;
-                whiteNoise.loop = true;
-
-                // Filter to make it sound like water, not static
-                const filter = audioCtx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.value = 400; 
-
-                waterGain = audioCtx.createGain();
-                waterGain.gain.value = 0.8;
-
-                whiteNoise.connect(filter);
-                filter.connect(waterGain);
-                waterGain.connect(audioCtx.destination);
-                
-                whiteNoise.start();
-                isWaterPlaying = whiteNoise;
-
-                // Modulation (LFO) to make flow irregular
-                setInterval(() => {
-                    if(waterGain) {
-                        filter.frequency.linearRampToValueAtTime(300 + Math.random() * 200, audioCtx.currentTime + 1);
-                    }
-                }, 1000);
-
-            } else {
-                if (isWaterPlaying) {
-                    isWaterPlaying.stop();
-                    isWaterPlaying = null;
-                }
-            }
-        }
-
-        // --- 2. APP LOGIC ---
-
-        function initApp() {
-            initAudio();
-            playBowl(); // Play sound immediately on interaction
-            document.querySelector('.bell-housing').classList.add('swinging');
-            
+        function enterSanctum() {
+            playBellSound();
+            document.querySelector('.bell-svg').classList.remove('bell-swinging');
             setTimeout(() => {
-                document.getElementById('entrance').style.opacity = 0;
+                document.getElementById('entrance-overlay').style.opacity = 0;
                 setTimeout(() => {
-                    document.getElementById('entrance').style.display = 'none';
-                    document.getElementById('app').classList.add('visible');
+                    document.getElementById('entrance-overlay').style.display = 'none';
+                    document.getElementById('app-wrapper').style.opacity = 1;
                 }, 1500);
-            }, 1000);
+            }, 500);
         }
 
-        function setMode(mode) {
-            // Reset visual states
-            document.getElementById('lota').classList.remove('active');
-            document.getElementById('diya').classList.remove('active');
-            document.getElementById('extra-modules').classList.add('hidden');
-            toggleWaterSound(false);
-
-            if(mode === 'water') {
-                document.getElementById('lota').classList.add('active');
-            } else if (mode === 'fire') {
-                document.getElementById('diya').classList.add('active');
-            } else if (mode === 'sound') {
-                document.getElementById('extra-modules').classList.remove('hidden');
-            }
-        }
-
-        // Interactions
         function toggleWater() {
-            const stream = document.getElementById('stream');
-            if (stream.classList.contains('flowing')) {
-                stream.classList.remove('flowing');
-                toggleWaterSound(false);
+            const el = document.getElementById('stream');
+            if(el.classList.contains('flowing')) {
+                el.classList.remove('flowing');
+                playWaterSound(false);
             } else {
-                stream.classList.add('flowing');
-                toggleWaterSound(true);
+                el.classList.add('flowing');
+                playWaterSound(true);
             }
         }
 
@@ -485,89 +433,68 @@
             document.getElementById('flame').classList.toggle('lit');
         }
 
-        function toggleStep(el) {
-            // Close others
-            document.querySelectorAll('.step-node').forEach(node => node.classList.remove('active'));
-            el.classList.add('active');
+        function activateTab(tab) {
+            // Hide all modules
+            document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
+            
+            if(tab === 'sound') {
+                document.getElementById('mod-sound').classList.add('active');
+            } else if (tab === 'video') {
+                document.getElementById('mod-video').classList.add('active');
+            } else if (tab === 'meditate') {
+                toggleTimer();
+            }
         }
 
-        // Timer
         let timerInt;
         let seconds = 0;
-        let meditating = false;
-        function toggleMeditation() {
-            const btn = document.getElementById('main-action-btn');
-            if(!meditating) {
-                meditating = true;
-                btn.innerText = "STOP & SAVE";
-                btn.style.background = "#333";
-                btn.style.color = "#fff";
-                playBowl();
+        let isRunning = false;
+        function toggleTimer() {
+            if(isRunning) {
+                clearInterval(timerInt);
+                isRunning = false;
+                document.querySelector('button[onclick="activateTab(\'meditate\')"]').innerText = "Start Dhyan";
+            } else {
+                isRunning = true;
+                playBellSound();
+                document.querySelector('button[onclick="activateTab(\'meditate\')"]').innerText = "Stop";
                 timerInt = setInterval(() => {
                     seconds++;
-                    let m = Math.floor(seconds / 60).toString().padStart(2, '0');
-                    let s = (seconds % 60).toString().padStart(2, '0');
+                    const m = Math.floor(seconds/60).toString().padStart(2,'0');
+                    const s = (seconds%60).toString().padStart(2,'0');
                     document.getElementById('timer').innerText = `${m}:${s}`;
                 }, 1000);
-            } else {
-                meditating = false;
-                clearInterval(timerInt);
-                btn.innerText = "BEGIN DHYAN";
-                btn.style.background = "var(--copper)";
-                btn.style.color = "black";
-                playBowl();
             }
         }
 
-        // --- 3. VIDEO RECORDER ---
+        // --- VIDEO RECORDER ---
         let mediaRecorder;
-        let recordedChunks = [];
-        let isRecording = false;
-
-        async function toggleCamera() {
-            const video = document.getElementById('video-feed');
-            const btn = document.getElementById('rec-btn');
-            const downloadLink = document.getElementById('download-link');
-
-            if (!isRecording) {
+        let chunks = [];
+        async function toggleCamera(btn) {
+            const vid = document.getElementById('webcam');
+            if(btn.innerText === "Start Camera") {
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-                    video.srcObject = stream;
-                    video.style.display = 'block';
-                    
+                    const stream = await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+                    vid.srcObject = stream;
                     mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.ondataavailable = (event) => {
-                        if (event.data.size > 0) recordedChunks.push(event.data);
-                    };
-                    mediaRecorder.onstop = () => {
-                        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    mediaRecorder.ondataavailable = e => chunks.push(e.data);
+                    mediaRecorder.onstop = e => {
+                        const blob = new Blob(chunks, {type:'video/webm'});
                         const url = URL.createObjectURL(blob);
-                        downloadLink.href = url;
-                        downloadLink.download = 'my-meditation.webm';
-                        downloadLink.style.display = 'block';
-                        downloadLink.innerText = "Click to Save Video";
-                        recordedChunks = [];
+                        const a = document.getElementById('dl-btn');
+                        a.href = url;
+                        a.download = 'shiva_dhyan.webm';
+                        a.style.display = 'block';
                     };
-
                     mediaRecorder.start();
-                    isRecording = true;
                     btn.innerText = "Stop Recording";
-                    btn.style.borderColor = "red";
-                    btn.style.color = "red";
-                } catch (err) {
-                    alert("Camera access denied.");
-                }
+                } catch(e) { alert("Camera Permission Denied"); }
             } else {
                 mediaRecorder.stop();
-                video.srcObject.getTracks().forEach(track => track.stop());
-                video.style.display = 'none';
-                isRecording = false;
+                vid.srcObject.getTracks().forEach(t => t.stop());
                 btn.innerText = "Start Camera";
-                btn.style.borderColor = "#444";
-                btn.style.color = "#888";
             }
         }
-
     </script>
 </body>
 </html>
